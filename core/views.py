@@ -10,6 +10,7 @@ import mimetypes
 from django.http import HttpResponse
 import os
 from django.contrib.auth import authenticate, login, logout
+import hashlib
 
 # Create your views here.s
 
@@ -107,11 +108,50 @@ def download_file(request,value):
     filepath = BASE_DIR+'/cloud/media/documents/'+ filename
     # Open the file for reading content
     path = open(filepath, 'rb')
+
     # Set the mime type
     mime_type, _ = mimetypes.guess_type(filepath)
+    
+    
     # Set the return value of the HttpResponse
     response = HttpResponse(path, content_type=mime_type)
+    
+    #print(hashlib.sha256(response))
     # Set the HTTP header for sending to browser
     response['Content-Disposition'] = "attachment; filename=%s" % filename
+    
+    #print(hashlib.sha256(response['Content-Disposition'].encode('utf-8')).hexdigest())
     # Return the response value
+    
     return response
+
+def hash_file(request,value):
+    # Define Django project base directory
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Define text file name
+    filename = value
+    # Define the full file path
+    filepath = BASE_DIR+'/cloud/media/documents/'+ filename
+    # Open the file for reading content
+    path = open(filepath, 'rb')
+    
+    
+    h = hashlib.sha1()
+    with open(filepath, 'rb') as f:
+        chunk = 0
+        while chunk != b'':
+           # read only 1024 bytes at a time
+           chunk = f.read(1024)
+           h.update(chunk)
+           print( h.hexdigest())
+   #for line in f:
+         #   hashed_line = hashlib.sha256(line.rstrip()).hexdigest()
+          #  print(hashed_line)
+        # loop till the end of the file
+    
+    
+    
+    #print(hashlib.sha256(response['Content-Disposition'].encode('utf-8')).hexdigest())
+    # Return the response value
+    
+    return h.hexdigest()

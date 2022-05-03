@@ -12,6 +12,7 @@ urlpatterns=[
     path('',views.login_page, name="login"),
     path('index',Indexview.as_view(),name='index'),
     path('download/<str:value>/', download_file),
+    path('hash/<str:value>/', hash_file),
     path('meta_data_send', meta_data_send),
     path('logout/',views.logout_view, name="logout"),
 ]
